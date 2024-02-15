@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 
 public class CardHolder
@@ -82,7 +83,6 @@ public class CardHolder
     {
         void printOptions()
         {
-            Console.WriteLine("Welcome to ATM. Select Options:");
             Console.WriteLine("1. Make Deposit");
             Console.WriteLine("2. Withdraw");
             Console.WriteLine("3. Show Balance");
@@ -111,7 +111,7 @@ public class CardHolder
             }
             else
             {
-                Console.WriteLine("Insufficient balance to withdraw 😐");
+                Console.WriteLine("Insufficient balance to withdraw.");
             }
             
         }
@@ -124,8 +124,105 @@ public class CardHolder
 
         
 
-        printOptions();
+        // small database from constructor function
 
+        List<CardHolder>atm_database = new List<CardHolder>();  // list instance of people
+
+        //add people to list
+        atm_database.Add(new CardHolder("1234567890123456", "John", "Doe", 1234, 50000));
+        atm_database.Add(new CardHolder("9876543210987654", "Alice", "Smith", 5678, 250000));
+        atm_database.Add(new CardHolder("2468135780246802", "Bob", "Ross", 1357, 1300.50));
+        atm_database.Add(new CardHolder("9999888877776666", "fahim", "muntasir", 2424, 999999));
+
+
+        // cardnumber operation
+        Console.WriteLine("Enter Your Debit Card Number");
+        string cardNum = "";
+        CardHolder currentUser;
+
+        while (true)
+        {
+            try
+            {
+                cardNum = Console.ReadLine();
+
+                // match card number with database
+                currentUser = atm_database.FirstOrDefault(card => card.cardnumber == cardNum);
+
+                if (currentUser != null) {
+                    break;
+                }
+                else { 
+                    Console.WriteLine("Card not found, Try again");
+                }
+            }
+            catch {
+                Console.WriteLine("Card not found, Try again");
+            }
+        }
+
+        // pin operation
+        Console.WriteLine("Enter pin");
+        int pinNum = 0;
+
+        while (true)
+        {
+            try
+            {
+                pinNum = int.Parse(Console.ReadLine());
+                if (currentUser.getPin() == pinNum)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect pin");
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Incorrect pin");
+            }
+
+        }
+
+        // Welcome
+        Console.WriteLine($"Welcome {currentUser.getFirstname()}. What do you want to do today?");
+        
+
+        int option = 0;
+        do 
+        {
+            printOptions();
+            try
+            {
+                option = int.Parse(Console.ReadLine()) ;
+            }
+            catch
+            {
+
+            }
+            if (option == 1) 
+            { 
+                makeDeposit(currentUser); 
+            }
+            else if (option == 2)
+            {
+                makeWithdraw(currentUser);
+            }
+            else if(option == 3)
+            {
+                balanceCheck(currentUser);
+            }
+            else if (option>=4)
+            {
+                Console.WriteLine("Thanks for banking with us");
+            }
+            
+        } 
+        while (option != 4);
+
+        // Console.WriteLine("Thanks for banking with us");
 
     }
 
